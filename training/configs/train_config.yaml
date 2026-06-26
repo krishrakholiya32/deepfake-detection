@@ -1,0 +1,19 @@
+data_dir: /kaggle/working/data   # output of prepare_dataset.py: {train,val,test}/{real,fake}/*.jpg
+run_name: effnetb0_v1
+output_dir: /kaggle/working/runs
+
+model_name: efficientnet_b0      # timm model name
+image_size: 224
+batch_size: 64
+num_workers: 4
+
+freeze_epochs: 3        # phase 1: train classifier head only
+finetune_epochs: 10     # phase 2: unfreeze last blocks, lower lr
+unfreeze_blocks: 3      # number of trailing blocks to unfreeze in phase 2
+
+freeze_lr: 0.001
+finetune_lr: 0.0001
+weight_decay: 0.00001
+
+early_stopping_patience: 4   # epochs without val AUC improvement before stopping
+seed: 42

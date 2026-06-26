@@ -1,0 +1,10 @@
+torch
+torchvision
+timm
+facenet-pytorch
+opencv-python-headless
+scikit-learn
+onnx
+onnxruntime
+pyyaml
+matplotlib

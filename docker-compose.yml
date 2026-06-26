@@ -1,0 +1,70 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: deepfake
+      POSTGRES_PASSWORD: deepfake
+      POSTGRES_DB: deepfake
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deepfake"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://deepfake:deepfake@db:5432/deepfake
+      UPLOADS_PATH: /app/uploads
+      MODELS_PATH: /app/models
+      ALLOWED_ORIGINS: '["http://localhost", "http://localhost:3001", "http://${SERVER_IP:-localhost}"]'
+      DETECTION_THRESHOLD: "${DETECTION_THRESHOLD:-0.5}"
+      MAX_VIDEO_DURATION_SECS: "${MAX_VIDEO_DURATION_SECS:-300}"
+      # Match thread pools to the CPU quota below — without this, ONNX Runtime/PyTorch
+      # detect the host's full core count and oversubscribe threads on the Arm VM.
+      OMP_NUM_THREADS: "${BACKEND_CPU_LIMIT:-2}"
+      OPENBLAS_NUM_THREADS: "${BACKEND_CPU_LIMIT:-2}"
+      MKL_NUM_THREADS: "${BACKEND_CPU_LIMIT:-2}"
+    volumes:
+      - ./models:/app/models   # trained .onnx artifact lives here, copied in via scripts/setup_models.py
+      - uploads:/app/uploads
+    ports:
+      - "8001:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: '${BACKEND_CPU_LIMIT:-2}'
+          memory: ${BACKEND_MEM_LIMIT:-4G}
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3001:80"
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  pgdata:
+  uploads:

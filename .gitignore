@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Models / weights
+*.pt
+*.onnx
+models/*.onnx
+models/*.pt
+
+# Training artifacts (large, regenerable)
+training/data/
+training/runs/
+
+# Env
+.env
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Uploads / storage
+backend/storage/
+backend/uploads/
+
+# Zip archives from Kaggle downloads
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
