@@ -36,8 +36,6 @@ def _load_detector():
 
 def extract_face(image_rgb: np.ndarray) -> np.ndarray | None:
     """Detect the most prominent face and return a 224×224 RGB crop, or None."""
-    import cv2
-
     h, w = image_rgb.shape[:2]
     detector = _load_detector()
     results = detector.process(image_rgb)
@@ -55,7 +53,7 @@ def extract_face(image_rgb: np.ndarray) -> np.ndarray | None:
     crop = image_rgb[y1:y2, x1:x2]
     if crop.size == 0:
         return None
-    return cv2.resize(crop, (FACE_SIZE, FACE_SIZE), interpolation=cv2.INTER_LINEAR)
+    return np.array(Image.fromarray(crop).resize((FACE_SIZE, FACE_SIZE), Image.LANCZOS))
 
 
 def predict_fake_prob(face_rgb: np.ndarray) -> float:
