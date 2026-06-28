@@ -74,30 +74,34 @@ with st.expander("ℹ️ About this model"):
 uploaded = st.file_uploader("Upload a portrait image", type=["jpg", "jpeg", "png"])
 
 if uploaded:
-    image = Image.open(uploaded).convert("RGB")
+    st.image(uploaded, caption="Uploaded image", use_container_width=True)
+    analyze = st.button("🔍 Analyze", use_container_width=True, type="primary")
 
-    with st.spinner("Preprocessing image…"):
-        face_arr = preprocess(image)
+    if analyze:
+        image = Image.open(uploaded).convert("RGB")
 
-    with st.spinner("Running deepfake classifier…"):
-        prob_fake = predict_fake_prob(face_arr)
+        with st.spinner("Preprocessing image…"):
+            face_arr = preprocess(image)
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.image(image, caption="Uploaded image", use_container_width=True)
-    with col2:
-        st.image(face_arr, caption="Model input (224×224 crop)", use_container_width=True)
+        with st.spinner("Running deepfake classifier…"):
+            prob_fake = predict_fake_prob(face_arr)
 
-    st.divider()
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(image, caption="Uploaded image", use_container_width=True)
+        with col2:
+            st.image(face_arr, caption="Model input (224×224 crop)", use_container_width=True)
 
-    if prob_fake >= 0.5:
-        st.error(f"### 🚨 FAKE — {prob_fake:.1%} fake probability")
-        st.caption("This face shows characteristics consistent with face-swap manipulation.")
-    else:
-        st.success(f"### ✅ REAL — {1 - prob_fake:.1%} real probability")
-        st.caption("No face-swap manipulation artifacts detected.")
+        st.divider()
 
-    st.progress(prob_fake, text=f"Fake probability: {prob_fake:.1%}")
+        if prob_fake >= 0.5:
+            st.error(f"### 🚨 FAKE — {prob_fake:.1%} fake probability")
+            st.caption("This face shows characteristics consistent with face-swap manipulation.")
+        else:
+            st.success(f"### ✅ REAL — {1 - prob_fake:.1%} real probability")
+            st.caption("No face-swap manipulation artifacts detected.")
+
+        st.progress(prob_fake, text=f"Fake probability: {prob_fake:.1%}")
 
 st.divider()
 st.caption(
