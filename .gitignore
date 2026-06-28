@@ -4,11 +4,11 @@ __pycache__/
 .venv/
 venv/
 
-# Models / weights
+# Models / weights (track only the exported ONNX, not PT checkpoints)
 *.pt
-*.onnx
-models/*.onnx
 models/*.pt
+# Allow the deployed ONNX model
+!models/*.onnx
 
 # Training artifacts (large, regenerable)
 training/data/
