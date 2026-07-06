@@ -11,6 +11,19 @@ A Streamlit web app that detects whether a portrait photo contains a **face-swap
 
 ---
 
+<table>
+  <tr>
+    <td><img src="screenshots/1-upload.png" alt="Upload page" width="100%"></td>
+    <td><img src="screenshots/2-result.png" alt="Detection result" width="100%"></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Upload — drop in a portrait photo</em></td>
+    <td align="center"><em>Result — real/fake verdict with confidence, side-by-side with the model's 224×224 input crop</em></td>
+  </tr>
+</table>
+
+---
+
 ## ✨ Features
 
 - 📸 Upload any portrait photo (JPG / PNG)
