@@ -24,6 +24,14 @@ A Streamlit web app that detects whether a portrait photo contains a **face-swap
 
 ---
 
+## Demo
+
+![Deepfake Detector Demo](screenshots/demo.gif)
+
+Try it live at **[deepfake-detection-zrik.streamlit.app](https://deepfake-detection-zrik.streamlit.app/)**
+
+---
+
 ## ✨ Features
 
 - 📸 Upload any portrait photo (JPG / PNG)
